@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from '@/lib/axios'; // Centralized Axios instance
+import axios from '@/lib/axios';
 import {
   Breadcrumbs,
   Link as MuiLink,
@@ -15,6 +15,8 @@ import {
   List,
   ListItem,
   ListItemText,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
 
 interface ContentData {
@@ -55,7 +57,7 @@ export default function ContentPage({ params }: { params: { name: string } }) {
         // Await resolution of `params`
         const resolvedParams = await params;
         const { name } = resolvedParams;
-
+        
         // Fetch content by name
         const contentResponse = await axios.get(`http://localhost:5000/contents?name=${name}`);
         if (contentResponse.data.length > 0) {
@@ -109,13 +111,26 @@ export default function ContentPage({ params }: { params: { name: string } }) {
   return (
     <Container>
       {/* Top Menu */}
-      <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
-        {categories.map((cat) => (
-          <MuiLink key={cat.id} href={`/content/${cat.name}`} color="inherit">
-            {cat.title}
-          </MuiLink>
-        ))}
-      </Box>
+      <AppBar position="static" sx={{ marginBottom: 2 }}>
+        <Toolbar>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            {categories.map((cat) => (
+              <MuiLink
+                key={cat.id}
+                href={`/content/${cat.name}`}
+                color="inherit"
+                underline="none"
+                sx={{
+                  fontWeight: 'bold',
+                  color: cat.name === category.name ? 'secondary.main' : 'white',
+                }}
+              >
+                {cat.title}
+              </MuiLink>
+            ))}
+          </Box>
+        </Toolbar>
+      </AppBar>
 
       {/* Breadcrumb Navigation */}
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 2 }}>
@@ -137,6 +152,7 @@ export default function ContentPage({ params }: { params: { name: string } }) {
                 textDecoration: 'none',
                 color: 'inherit',
                 '&:hover': { textDecoration: 'underline' },
+                fontWeight: subject.name === name ? 'bold' : 'normal',
               }}
             >
               <ListItemText primary={subject.title} />
@@ -149,8 +165,8 @@ export default function ContentPage({ params }: { params: { name: string } }) {
           <Card sx={{ display: 'flex', marginBottom: 4 }}>
             <CardMedia
               component="img"
-              sx={{ width: 300 }}
-              image={content.imageCtr || '/assets/images/default.jpg'}
+              sx={{ width: 300, height: 200 }}
+              image={content.imageCtr || '/assets/images/default.jpg'} // Placeholder image
               alt={content.title}
             />
             <CardContent>
@@ -172,6 +188,15 @@ export default function ContentPage({ params }: { params: { name: string } }) {
             <Typography key={index} paragraph>{paragraph}</Typography>
           ))}
         </Box>
+      </Box>
+
+      {/* Footer */}
+      <Box component="footer" sx={{ marginTop: 4, padding: 2, bgcolor: 'primary.main', color: 'white' }}>
+        <Typography variant="body2" align="center">
+          © {new Date().getFullYear()} Adaptive Enterprise Inc. |{' '}
+          <MuiLink href="/privacy" color="inherit" underline="always">Privacy Policy</MuiLink> |{' '}
+          <MuiLink href="/terms" color="inherit" underline="always">Terms of Use</MuiLink>
+        </Typography>
       </Box>
     </Container>
   );
