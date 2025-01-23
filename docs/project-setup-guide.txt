@@ -1,0 +1,171 @@
+// Comprehensive Guide: Setting Up a Next.js Project for Adaprise-Portal
+
+// Step 1: Install Node.js and npm
+// Before setting up the Next.js project, ensure Node.js is installed on your machine.
+// Recommended version: Node.js >= 14.x and npm >= 6.x.
+
+// Check your installed versions:
+// Run the following commands in the terminal to verify:
+node -v
+npm -v
+
+// If Node.js is not installed, download and install it from:
+// https://nodejs.org/en/download/
+
+
+// Step 2: Initialize a New Next.js Project
+// 1. Navigate to the parent directory where you want the project to reside.
+// 2. Use npx to create a new Next.js project with TypeScript support:
+npx create-next-app@latest adaprise-portal --typescript
+
+// Use defaults in response to the above command:
+// - Choose the default to not use the src folder to keep the code in.
+// - Would you like to customize the import alias (@/* by default)? No
+//    By default, Next.js sets up an alias @/*, which allows you to use shorter and cleaner import paths for files within your project.
+//      If you choose No, the default @/* alias will remain.
+//      If you choose Yes, you'll be prompted to define a custom alias (e.g., @src/*, ~/*).
+
+// 3. Navigate to the project directory:
+cd adaprise-portal
+
+// The above command creates a ready-to-use Next.js project structure.
+
+
+// Step 3: Explore the Directory Structure
+├── README.md
+├── app
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── tailwind.config.ts
+└── tsconfig.json
+
+// Step 4: Start the Development Server
+// Run the following command to start the local development server:
+npm run dev
+
+// Open your browser and navigate to http://localhost:3000 to see the app running.
+
+// We are using the App Router option. Proceed to the related document: boilerplate-structure.md
+
+//Alternately, if you want to use the Page Router option
+// it proceed as follows:
+
+// Step 5: Understand Pages and Routing
+// - In Next.js, each file in the `pages/` folder automatically becomes a route.
+// - For example, `pages/index.tsx` serves as the homepage, accessible via `/`.
+// - To create a new route, add a new file:
+// Create a file at `pages/about.tsx`:
+export default function About() {
+  return <h1>About Adaprise</h1>;
+}
+
+// Access it in the browser at http://localhost:3000/about
+
+
+// Step 6: Add Material-UI for Styling
+// Next.js integrates well with Material-UI for a professional and consistent design.
+
+// 1. Install Material-UI and Emotion (the styling library used by Material-UI):
+npm install @mui/material @emotion/react @emotion/styled
+
+// 2. Add a Theme Provider
+// Wrap your app with Material-UI's ThemeProvider for consistent theming.
+// Modify `pages/_app.tsx` as follows:
+import * as React from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import type { AppProps } from 'next/app';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#ff4081',
+    },
+  },
+});
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Component {...pageProps} />
+    </ThemeProvider>
+  );
+}
+
+
+// Step 7: Add Static and Dynamic Pages
+
+// Static Pages:
+// Create a new file at `pages/contact.tsx`:
+export default function Contact() {
+  return <h1>Contact Us</h1>;
+}
+
+// Dynamic Pages:
+// Add a file `pages/product/[id].tsx` for a dynamic route:
+import { useRouter } from 'next/router';
+
+export default function Product() {
+  const router = useRouter();
+  const { id } = router.query;
+
+  return <h1>Product ID: {id}</h1>;
+}
+
+// Access this page via http://localhost:3000/product/123
+
+
+// Step 8: Fetch Data with Next.js
+// Next.js provides two main ways to fetch data:
+// - `getStaticProps`: Fetch data at build time.
+// - `getServerSideProps`: Fetch data on each request.
+
+// Example: Fetching data at build time
+// Modify `pages/index.tsx`:
+export async function getStaticProps() {
+  return {
+    props: {
+      message: 'Hello, Adaprise!',
+    },
+  };
+}
+
+export default function Home({ message }: { message: string }) {
+  return <h1>{message}</h1>;
+}
+
+
+// Step 9: Optimize for Production
+// 1. Build the project for production:
+npm run build
+
+// 2. Start the production server:
+npm start
+
+// 3. Deploy to your preferred platform (e.g., Vercel, AWS, or DigitalOcean).
+
+
+// Step 10: Explore Next.js Features
+// - API Routes: Create backend APIs directly in the `pages/api` folder.
+// - Image Optimization: Use the `next/image` component for optimized images.
+// - Middleware: Add custom logic to handle requests before they reach routes.
+
+// With this, your Next.js project for Adaprise Portal is ready for development and future scaling.
